@@ -1,16 +1,27 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
-
-# General application configuration
 import Config
 
 config :kyc_es_elixir,
   namespace: Exp,
   ecto_repos: [Exp.Repo],
   generators: [binary_id: true]
+
+config :kyc_es_elixir,
+  event_store: [
+    adapter: Commanded.EventStore.Adapters.EventStore,
+    event_store: Exp.EventStore
+  ],
+  pubsub: :local,
+  registry: :local
+
+config :kyc_es_elixir, Exp.EventStore,
+  serializer: Commanded.Serialization.JsonSerializer,
+  username: "postgres",
+  password: "postgres",
+  database: "eventstore_dev",
+  hostname: "localhost",
+  pool_size: 10
+
+config :kyc_es_elixir, event_stores: [Exp.EventStore]
 
 # Configures the endpoint
 config :kyc_es_elixir, ExpWeb.Endpoint,
